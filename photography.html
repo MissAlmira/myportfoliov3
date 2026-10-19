@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#101923">
+<meta name="description" content="Photography samples by Almira R. Bogayan.">
+<meta property="og:title" content="Photography | Almira R. Bogayan">
+<meta property="og:description" content="Selected photography by Almira R. Bogayan.">
+<title>Photography | Almira R. Bogayan</title>
+<link rel="stylesheet" href="css/style.css"><script defer src="js/script.js"></script>
+<style>
+.photography-main{min-height:65vh;padding:72px 0 100px;background:#f6f4ed;color:#172b28}
+.photo-page-head{max-width:760px;margin-bottom:36px}.photo-page-head h1{font-size:clamp(2.6rem,6vw,5rem);line-height:1.03;margin:16px 0}.photo-page-head p{max-width:620px;color:#52645e}
+.dynamic-gallery{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:18px}
+.dynamic-photo{display:block;border:0;padding:0;background:#e8ece5;border-radius:14px;overflow:hidden;cursor:pointer;text-align:left;color:#172b28}
+.dynamic-photo img{width:100%;height:280px;display:block;object-fit:cover;transition:transform .35s ease}
+.dynamic-photo:hover img{transform:scale(1.035)}.dynamic-photo span{display:block;padding:12px 14px;font-size:.92rem}
+.photo-empty{display:none}
+.photo-lightbox{position:fixed;inset:0;background:rgba(9,18,18,.92);z-index:99;display:none;align-items:center;justify-content:center;padding:24px}
+.photo-lightbox.is-open{display:flex}.photo-lightbox img{max-width:min(100%,1100px);max-height:82vh;object-fit:contain}.photo-lightbox button{position:absolute;top:18px;right:20px;background:#fff;color:#111;border:0;border-radius:100px;padding:10px 14px;cursor:pointer}
+@media(max-width:760px){.dynamic-gallery{grid-template-columns:repeat(2,minmax(0,1fr))}.dynamic-photo img{height:220px}}
+@media(max-width:480px){.dynamic-gallery{grid-template-columns:1fr}.dynamic-photo img{height:auto;max-height:360px}}
+</style>
+</head>
+<body>
+<header class="site-header"><nav class="nav shell" aria-label="Main navigation">
+<a class="brand" href="index.html"><img class="brand-photo" src="assets/images/profile-photo.png" alt="" width="38" height="38"><span class="brand-name">Almira Bogayan<span class="brand-dot">.</span></span></a>
+<button class="menu-toggle" aria-expanded="false" aria-controls="nav-links" aria-label="Open navigation menu"><span></span><span></span></button>
+<div class="nav-links" id="nav-links"><a href="index.html#about">About</a><a href="index.html#expertise">Expertise</a><a href="index.html#case-studies">Case studies</a><a href="index.html#ai-work">AI evaluation</a><a href="index.html#beyond-work">Beyond work</a><a href="photography.html">Photography</a><a class="nav-cta" href="index.html#contact">Let's connect <span aria-hidden="true">↗</span></a></div>
+</nav></header>
+<main class="photography-main" id="gallery-main">
+<div class="shell">
+<div class="photo-page-head"><p class="eyebrow">PERSONAL WORK</p><h1>Photography, <span class="muted-heading">in focus.</span></h1><p>A collection of personal photographs and visual moments.</p></div>
+<div id="photo-gallery" class="dynamic-gallery" aria-live="polite"></div>
+</div>
+</main>
+<div class="photo-lightbox" id="photo-lightbox" role="dialog" aria-modal="true" aria-label="Enlarged photograph"><button type="button" id="photo-close">Close ✕</button><img src="" alt="" id="lightbox-image"></div>
+<footer class="footer"><div class="shell footer-main"><a class="brand" href="index.html"><img class="brand-photo" src="assets/images/profile-photo.png" alt="" width="38" height="38"><span class="brand-name">Almira Bogayan<span class="brand-dot">.</span></span></a><p>Clear communication. Thoughtful evaluation.<br>Quality-driven digital support.</p><div class="footer-links"><a href="index.html">Home</a><a href="https://www.linkedin.com/in/almirabogayan/" target="_blank" rel="noopener noreferrer">LinkedIn ↗</a></div></div><div class="shell footer-bottom"><span>© <span id="year"></span> Almira R. Bogayan</span></div></footer>
+<script>
+(async function(){
+ const link=[...document.querySelectorAll('a')].find(a=>a.getAttribute('href')==='photography.html');
+ const gallery=document.getElementById('photo-gallery');
+ try {
+  const response=await fetch('assets/images/photography/photography.json');
+  const data=await response.json();
+  const photos=Array.isArray(data.photos)?data.photos:[];
+  if(!photos.length){ if(link) link.hidden=true; document.querySelector('.photo-page-head').hidden=true; return; }
+  photos.forEach(photo=>{
+   if(!photo.src) return;
+   const button=document.createElement('button'); button.className='dynamic-photo'; button.type='button';
+   const img=document.createElement('img'); img.src='assets/images/photography/'+photo.src; img.alt=photo.alt||photo.caption||'Photography sample'; img.loading='lazy';
+   const caption=document.createElement('span'); caption.textContent=photo.caption||'';
+   button.append(img,caption); button.addEventListener('click',()=>{const box=document.getElementById('photo-lightbox');document.getElementById('lightbox-image').src=img.src;document.getElementById('lightbox-image').alt=img.alt;box.classList.add('is-open')}); gallery.append(button);
+  });
+ } catch(e){ if(link) link.hidden=true; document.querySelector('.photo-page-head').hidden=true; }
+ document.getElementById('photo-close').addEventListener('click',()=>document.getElementById('photo-lightbox').classList.remove('is-open'));
+ document.getElementById('photo-lightbox').addEventListener('click',e=>{if(e.target.id==='photo-lightbox')e.currentTarget.classList.remove('is-open')});
+})();
+</script>
+</body></html>
